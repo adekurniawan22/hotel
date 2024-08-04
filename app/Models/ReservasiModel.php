@@ -12,7 +12,7 @@ class ReservasiModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['nama_pemesan', 'email', 'no_hp', 'tanggal_checkin', 'tanggal_checkout', 'status', 'diselesaikan_oleh'];
+    protected $allowedFields = ['nama_pemesan', 'email', 'no_hp', 'tanggal_checkin', 'tanggal_checkout', 'status', 'dikonfirmasi'];
     protected $useTimestamps = false;
 
     public function getReservasiForCurrentMonth()
@@ -20,11 +20,6 @@ class ReservasiModel extends Model
         return $this->where('MONTH(tanggal_checkin)', date('m'))
             ->where('YEAR(tanggal_checkin)', date('Y'))
             ->countAllResults();
-    }
-
-    public function getCountByStatus(string $status): int
-    {
-        return $this->where('status', $status)->countAllResults();
     }
 
     public function getTotalRevenueForCurrentMonth($detailReservasiModel)
@@ -36,6 +31,7 @@ class ReservasiModel extends Model
         $reservasiIds = $this->select('id')
             ->where('MONTH(tanggal_checkin)', $currentMonth)
             ->where('YEAR(tanggal_checkin)', $currentYear)
+            ->where('status', "selesai")
             ->findColumn('id');
 
         if (empty($reservasiIds)) {

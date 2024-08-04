@@ -19,7 +19,7 @@
                             <th>Nama</th>
                             <th>Username</th>
                             <th>Role</th>
-                            <th>Action</th>
+                            <th class="text-center" style="width: 15%" data-sortable="false">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +28,7 @@
                                 <td><?= esc($user['nama']) ?></td>
                                 <td><?= esc($user['username']) ?></td>
                                 <td><?= esc($user['role']) ?></td>
-                                <td>
+                                <td class="text-center">
                                     <a href="<?= site_url('user/edit/' . $user['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-url="<?= site_url('user/delete/' . $user['id']) ?>">Hapus</button>
                                 </td>

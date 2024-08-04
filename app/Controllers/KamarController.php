@@ -18,7 +18,7 @@ class KamarController extends Controller
     {
         $data = [
             'title' => 'Kamar',
-            'kamar' => $this->kamarModel->findAll(),
+            'kamar' => $this->kamarModel->getAvailableKamar(),
         ];
         return view('kamar/list', $data);
     }

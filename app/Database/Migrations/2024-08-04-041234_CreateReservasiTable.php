@@ -36,10 +36,10 @@ class CreateReservasiTable extends Migration
             ],
             'status'            => [
                 'type'              => 'ENUM',
-                'constraint'        => ['pending', 'selesai', 'gagal'],
+                'constraint'        => ['pending', 'dikonfirmasi', 'check-in', 'selesai', 'gagal'],
                 'default'           => 'pending',
             ],
-            'diselesaikan_oleh' => [
+            'dikonfirmasi' => [
                 'type'              => 'INT',
                 'constraint'        => 11,
                 'unsigned'          => true,
@@ -47,7 +47,7 @@ class CreateReservasiTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('diselesaikan_oleh', 'user', 'id', 'SET NULL', 'CASCADE');
+        $this->forge->addForeignKey('dikonfirmasi', 'user', 'id', 'SET NULL', 'CASCADE');
         $this->forge->createTable('reservasi');
     }
 

@@ -40,6 +40,27 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <!-- Topbar Navbar -->
+                    <?php
+                    $currentHour = (new \DateTime('now', new \DateTimeZone('Asia/Jakarta')))->format('H');
+
+                    if ($currentHour >= 5 && $currentHour < 12) {
+                        $greeting = 'Selamat Pagi';
+                        $icon = 'fa-sun'; // Ikon matahari untuk pagi
+                    } elseif ($currentHour >= 12 && $currentHour < 14) {
+                        $greeting = 'Selamat Siang';
+                        $icon = 'fa-sun'; // Ikon matahari untuk siang
+                    } elseif ($currentHour >= 14 && $currentHour < 18) {
+                        $greeting = 'Selamat Sore';
+                        $icon = 'fa-cloud-sun'; // Ikon matahari terbenam untuk sore
+                    } else {
+                        $greeting = 'Selamat Malam';
+                        $icon = 'fa-moon'; // Ikon bulan untuk malam
+                    }
+                    ?>
+                    <span class="navbar-text ml-2">
+                        <i class="fas <?= $icon ?> mr-2"></i><?= $greeting ?>
+                    </span>
+
                     <ul class="navbar-nav ml-auto">
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">

@@ -17,53 +17,61 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Nama Kamar</th>
                             <th>Nama Pemesan</th>
                             <th>Email</th>
                             <th>No HP</th>
-                            <th>Tanggal Check-In</th>
-                            <th>Tanggal Check-Out</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th style="width: 15%;">Status</th>
+                            <th class="text-center" style="width: 20%" data-sortable="false">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($reservasi as $item) : ?>
                             <tr>
-                                <td><?= esc($item['id_reservasi']) ?></td>
-                                <td><?= esc($item['nama_kamar']) ?></td>
+                                <td><?= esc($item['id']) ?></td>
                                 <td><?= esc($item['nama_pemesan']) ?></td>
                                 <td><?= esc($item['email']) ?></td>
                                 <td><?= esc($item['no_hp']) ?></td>
-                                <td><?= esc($item['tanggal_check_in']) ?></td>
-                                <td><?= esc($item['tanggal_check_out']) ?></td>
+                                <td><?= esc($item['tanggal_checkin']) ?></td>
+                                <td><?= esc($item['tanggal_checkout']) ?></td>
                                 <td>
-                                    <p class="mb-3"><?= ucfirst(esc($item['status'])) ?></p>
+                                    <p class="mb-3">
+                                        <?php
+                                        $statusIcon = '';
+                                        switch ($item['status']) {
+                                            case 'pending':
+                                                $statusIcon = '<i class="fas fa-hourglass-start text-warning"></i> ';
+                                                break;
+                                            case 'dikonfirmasi':
+                                                $statusIcon = '<i class="fas fa-check-circle text-primary"></i> ';
+                                                break;
+                                            case 'check-in':
+                                                $statusIcon = '<i class="fas fa-door-open text-info"></i> ';
+                                                break;
+                                            case 'selesai':
+                                                $statusIcon = '<i class="fas fa-check-double text-success"></i> ';
+                                                break;
+                                            case 'gagal':
+                                                $statusIcon = '<i class="fas fa-times-circle text-danger"></i> ';
+                                                break;
+                                        }
+                                        ?>
+                                        <?= $statusIcon . ucfirst(esc($item['status'])) ?>
+                                    </p>
 
                                     <?php
-                                    // Menyiapkan array untuk menyimpan informasi pengguna yang akan ditampilkan
                                     $userInfos = [];
 
-                                    if ($item['status'] == 'selesai') {
-                                        // Jika status selesai, tampilkan nama dari diproses_oleh dan diselesaikan_oleh
-                                        if (!is_null($item['diproses_oleh'])) {
-                                            $userInfos[] = ['label' => 'Diproses oleh', 'id' => $item['diproses_oleh']];
-                                        }
-                                        if (!is_null($item['diselesaikan_oleh'])) {
-                                            $userInfos[] = ['label' => 'Diselesaikan oleh', 'id' => $item['diselesaikan_oleh']];
-                                        }
-                                    } elseif ($item['status'] == 'diproses') {
-                                        // Jika status diproses, tampilkan nama dari diproses_oleh
-                                        if (!is_null($item['diproses_oleh'])) {
-                                            $userInfos[] = ['label' => 'Diproses oleh', 'id' => $item['diproses_oleh']];
+                                    if ($item['status'] == 'selesai' || $item['status'] == 'dikonfirmasi') {
+                                        if (!is_null($item['dikonfirmasi'])) {
+                                            $userInfos[] = ['label' => 'Dikonfirmasi oleh', 'id' => $item['dikonfirmasi']];
                                         }
                                     }
 
-                                    // Mengambil dan menampilkan nama pengguna
                                     if (!empty($userInfos)) {
                                         $db = \Config\Database::connect();
-                                        $builder = $db->table('user'); // Ganti 'user' dengan tabel pengguna Anda
-
+                                        $builder = $db->table('user');
                                         foreach ($userInfos as $userInfo) {
                                             $builder->where('id', $userInfo['id']);
                                             $user = $builder->get()->getRow();
@@ -78,20 +86,138 @@
                                     ?>
                                 </td>
 
-
-                                <td>
-                                    <a href="<?= site_url('reservasi/edit/' . $item['id_reservasi']) ?>" class="btn btn-warning btn-sm mb-1">Edit</a>
-                                    <a href="<?= site_url('reservasi/delete/' . $item['id_reservasi']) ?>" class="btn btn-danger btn-sm mb-1">Hapus</a>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-info btn-sm mb-1 btn-detail" data-id="<?= esc($item['id']) ?>">Detail</button>
+                                    <a href="<?= site_url('reservasi/edit/' . $item['id']) ?>" class="btn btn-warning btn-sm mb-1">Edit</a>
+                                    <button type="button" class="btn btn-danger btn-sm mb-1" data-toggle="modal" data-target="#deleteModal" data-url="<?= site_url('reservasi/delete/' . $item['id']) ?>">Hapus</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>
 </div>
-<?= $this->endSection() ?>
 
-<?= $this->section('scripts') ?>
+<!-- Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">Detail Reservasi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Konten modal akan dimuat di sini -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Ketika tombol Detail diklik
+        $('.btn-detail').on('click', function() {
+            var id = $(this).data('id'); // Ambil ID dari atribut data-id
+            $.ajax({
+                url: '<?= site_url('reservasi/detail') ?>', // URL endpoint untuk mendapatkan detail
+                type: 'POST', // Menggunakan POST
+                data: {
+                    id: id
+                }, // Kirim ID sebagai parameter
+                dataType: 'json',
+                success: function(response) {
+                    var totalHarga = 0;
+                    var modalBody = `
+                    <div style="line-height: 2;" class="mb-3">
+                        <div><strong>Nama Pemesan:</strong> ${response.nama_pemesan}</div>
+                        <div><strong>Email:</strong> ${response.email}</div>
+                        <div><strong>No HP:</strong> ${response.no_hp}</div>
+                        <div><strong>Tanggal Check-In:</strong> ${response.tanggal_checkin}</div>
+                        <div><strong>Tanggal Check-Out:</strong> ${response.tanggal_checkout}</div>
+                        <div><strong>Status:</strong> <span style="text-transform: capitalize;">${response.status}</span></div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nama Kamar</th>
+                                <th style="text-align: center;">Harga</th>
+                                <th style="text-align: center;">Jumlah Kamar</th>
+                                <th style="text-align: center;">Total Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                    // Iterasi melalui data detail dan buat baris tabel
+                    $.each(response.details, function(index, item) {
+                        var itemTotal = parseFloat(item.harga) * parseInt(item.jumlah_kamar);
+                        totalHarga += itemTotal;
+
+                        modalBody += `
+                        <tr>
+                            <td>${item.nama_kamar}</td>
+                            <td style="text-align: center;">${formatRupiah(item.harga)}</td>
+                            <td style="text-align: center;">x ${item.jumlah_kamar}</td>
+                            <td style="text-align: center;">${formatRupiah(itemTotal.toFixed(0))}</td>
+                        </tr>
+                    `;
+                    });
+
+                    // Tambahkan baris total
+                    modalBody += `
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-right">Total</th>
+                                <th style="text-align: center;">${formatRupiah(totalHarga.toFixed(0))}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                `;
+
+                    $('#detailModal .modal-body').html(modalBody);
+                    $('#detailModal').modal('show'); // Tampilkan modal
+                },
+                error: function() {
+                    alert('Terjadi kesalahan saat memuat data.');
+                }
+            });
+        });
+
+        // Fungsi untuk format angka ke format Rupiah
+        function formatRupiah(angka) {
+            // Ubah angka menjadi string dan hilangkan karakter selain angka dan koma
+            var number_string = angka.toString().replace(/[^,\d]/g, '');
+
+            // Pisahkan bagian integer dan desimal
+            var split = number_string.split(',');
+            var sisa = split[0].length % 3;
+            var rupiah = split[0].substr(0, sisa);
+            var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // Tambahkan pemisah ribuan
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            // Tambahkan pecahan desimal jika ada
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+
+            return 'Rp. ' + rupiah;
+        }
+
+    });
+</script>
+
 <?= $this->endSection() ?>

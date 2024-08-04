@@ -30,9 +30,6 @@ class DashboardController extends Controller
             'jumlah_user' => $this->userModel->countAllResults(),
             'jumlah_kamar' => $this->kamarModel->countAllResults(),
             'jumlah_reservasi' => $this->reservasiModel->getReservasiForCurrentMonth(),
-            'jumlah_reservasi_pending' => $this->reservasiModel->getCountByStatus('pending'),
-            'jumlah_reservasi_gagal' => $this->reservasiModel->getCountByStatus('gagal'),
-            'jumlah_reservasi_selesai' => $this->reservasiModel->getCountByStatus('selesai'),
             'jumlah_uang_masuk' => $this->reservasiModel->getTotalRevenueForCurrentMonth($this->detailReservasiModel),
         ];
         return view('dashboard', $data);

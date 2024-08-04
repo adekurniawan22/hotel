@@ -17,22 +17,24 @@
                     <thead>
                         <tr>
                             <th>Nama Kamar</th>
-                            <th>Jumlah Kamar</th>
-                            <th>Deskripsi</th>
                             <th>Tipe Kamar</th>
+                            <th style="width: 25%;">Deskripsi</th>
+                            <th>Kapasitas</th>
+                            <th>Jumlah Kamar</th>
                             <th>Harga</th>
-                            <th>Action</th>
+                            <th class="text-center" style="width: 15%" data-sortable="false">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($kamar as $item) : ?>
                             <tr>
                                 <td><?= esc($item['nama_kamar']) ?></td>
-                                <td><?= esc($item['jumlah_kamar']) ?></td>
-                                <td><?= esc($item['deskripsi']) ?></td>
                                 <td><?= esc($item['tipe_kamar']) ?></td>
-                                <td><?= esc($item['harga']) ?></td>
-                                <td>
+                                <td><?= esc($item['deskripsi']) ?></td>
+                                <td><?= esc($item['maksimal_kapasitas']) ?> Orang</td>
+                                <td><?= esc($item['jumlah_pesan']) ?>/<?= esc($item['jumlah_kamar']) ?> Kamar</td>
+                                <td><?= "Rp. " . number_format($item['harga'], 0, ',', '.') ?></td>
+                                <td class="text-center">
                                     <a href="<?= site_url('kamar/edit/' . $item['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-url="<?= site_url('kamar/delete/' . $item['id']) ?>">Hapus</button>
                                 </td>

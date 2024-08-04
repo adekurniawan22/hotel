@@ -51,69 +51,6 @@
         </div>
     </div>
 
-    <!-- Content Row for Reservation Status -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="h5 mb-4 text-gray-800">Status Reservasi</h2>
-        </div>
-        <!-- Jumlah Reservasi Pending Card Example -->
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Reservasi Pending
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_reservasi_pending ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fa-solid fa-hourglass-start fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Jumlah Reservasi Gagal Card Example -->
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Reservasi Gagal
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_reservasi_gagal ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fa-solid fa-times-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Jumlah Reservasi Selesai Card Example -->
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Reservasi Selesai
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jumlah_reservasi_selesai ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fa-solid fa-check-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Content Row for Monthly Report -->
     <div class="row">
         <div class="col-12">
