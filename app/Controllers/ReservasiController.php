@@ -147,6 +147,75 @@ class ReservasiController extends Controller
             'dikonfirmasi' => $diKonfirmasi,
         ]);
 
+        $this->detailReservasiModel->where('id_reservasi', $id)->delete();
+
+        $kamarIds = $this->request->getPost('kamar_id');
+        $jumlahPesans = $this->request->getPost('jumlah_pesan');
+
+        foreach ($kamarIds as $index => $kamarId) {
+            if (isset($jumlahPesans[$index]) && is_numeric($jumlahPesans[$index]) && $jumlahPesans[$index] > 0) {
+                $detailData = [
+                    'id_reservasi' => $id,
+                    'id_kamar' => $kamarId,
+                    'jumlah_kamar' => $jumlahPesans[$index]
+                ];
+
+                $this->detailReservasiModel->insert($detailData);
+            }
+        }
+
+        if ($status == 'dikonfirmasi') {
+            $totalHargaKeseluruhan = 0; // Inisialisasi total harga keseluruhan
+
+            $message = '<p>Terima kasih atas pemesanan Anda di Hotel kami. Pesanan anda sudah dikonfirmasi. Berikut adalah detail pemesanan Anda:</p>';
+            $message .= '<p><strong>Nama Pemesan:</strong> ' . $this->request->getPost('nama_pemesan') . '</p>';
+            $message .= '<p><strong>Email:</strong> ' . $this->request->getPost('email') . '</p>';
+            $message .= '<p><strong>No. HP:</strong> ' . $this->request->getPost('no_hp') . '</p>';
+            $message .= '<p><strong>Tanggal Check-in:</strong> ' . $this->request->getPost('tanggal_checkin') . '</p>';
+            $message .= '<p><strong>Tanggal Check-out:</strong> ' . $this->request->getPost('tanggal_checkout') . '</p>';
+
+            $message .= '<p><strong>Detail Pemesanan Kamar:</strong></p>';
+            $message .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+            $message .= '<thead><tr><th>Nama Kamar</th><th>Harga per Kamar</th><th>Jumlah</th><th>Total Harga</th></tr></thead>';
+            $message .= '<tbody>';
+
+            foreach ($kamarIds as $index => $kamarId) {
+                if (isset($jumlahPesans[$index]) && is_numeric($jumlahPesans[$index]) && $jumlahPesans[$index] > 0) {
+                    $kamar = $this->kamarModel->find($kamarId);
+                    $hargaKamar = $kamar['harga']; // Misalkan 'harga' adalah nama kolom harga di tabel kamar
+                    $jumlahKamar = $jumlahPesans[$index];
+                    $totalHarga = $hargaKamar * $jumlahKamar;
+
+                    // Tambah total harga ke total keseluruhan
+                    $totalHargaKeseluruhan += $totalHarga;
+
+                    $message .= '<tr>';
+                    $message .= '<td>' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
+                    $message .= '<td>Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
+                    $message .= '<td>x ' . $jumlahKamar . '</td>';
+                    $message .= '<td>Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
+                    $message .= '</tr>';
+                }
+            }
+
+            $message .= '<tr><td colspan="3" style="text-align: right;"><strong>Total Keseluruhan:</strong></td>';
+            $message .= '<td>Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
+            $message .= '</tbody>';
+            $message .= '</table><br>';
+
+            $message .= '<p>Silakan tunjukin bukti email ini ketika melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hoteliksal@email.com.</p>';
+            $message .= '<p>Terima kasih dan selamat berlibur!</p>';
+
+            $email = \Config\Services::email();
+            $email->setFrom('appcilogin@gmail.com', 'Tim Hotel');
+            $email->setTo($this->request->getPost('email'));
+            $email->setSubject('Pemesanan Kamar Telah Di Konfirmasi');
+            $email->setMessage($message);
+            $email->setMailType('html'); // Mengirim email dalam format HTML
+
+            $email->send();
+        }
+
         session()->setFlashdata('success', 'Reservasi berhasil diperbarui!');
         return redirect()->to('/reservasi');
     }

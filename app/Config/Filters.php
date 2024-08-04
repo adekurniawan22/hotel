@@ -112,7 +112,6 @@ class Filters extends BaseFilters
                 'profil/*',
                 'dashboard',
                 'reservasi/*',
-                'kamar/pesan/*',
             ],
         ],
         'roleAdminFilter' => [

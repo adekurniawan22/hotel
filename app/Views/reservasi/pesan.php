@@ -36,7 +36,7 @@
 <body>
     <div class="container mt-5 mb-5">
         <h2 class="text-center mb-4">Formulir Pemesanan Kamar</h2>
-        <form action="<?= site_url('kamar/pesan/' . $id_kamar) ?>" method="post" class="mx-5">
+        <form action="<?= site_url('pemesanan/' . $id_kamar) ?>" method="post" class="mx-5">
             <!-- Informasi Kamar yang Dipilih -->
             <div class="mb-3" id="selected_room_info">
                 <label for="kamar_info" class="form-label">Informasi Kamar</label>
@@ -81,7 +81,7 @@
                                     <p class="card-text"><?= $item['deskripsi'] ?></p>
                                     <p class="card-text mb-0">Tersedia <strong><?= $item['jumlah_kamar'] - $item['jumlah_pesan'] ?> Kamar</strong></p>
                                     <p class="card-text"><strong>Harga:</strong> Rp. <?= number_format($item['harga'], 0, ',', '.') ?> per malam</p>
-                                    <button type="button" class="btn btn-primary btn-order-room w-100 mb-3" data-room-id="<?= $item['id'] ?>" id="btn-order-<?= $item['id'] ?>">Pesan Kamar Ini</button>
+                                    <button type="button" class="btn btn-primary btn-order-room w-100 mb-3" data-room-id="<?= $item['id'] ?>" id="btn-order-<?= $item['id'] ?>">Pilih Kamar Ini</button>
                                     <div class="input-jumlah text-center" id="input-jumlah-<?= $item['id'] ?>" style="display: none;">
                                         <label for="jumlah_<?= $item['id'] ?>" class="form-label">Jumlah Kamar Yang Dipesan</label>
                                         <input type="hidden" value="<?= $item['id'] ?>" id="kamar_<?= $item['id'] ?>">
@@ -176,7 +176,7 @@
                     inputJumlah.style.display = 'none';
                     inputJumlahValue.value = ''; // Clear value when not displayed
                     inputJumlahValue.removeAttribute('name'); // Remove name attribute
-                    button.textContent = 'Pesan Kamar Ini';
+                    button.textContent = 'Pilih Kamar Ini';
                     button.classList.remove('btn-danger');
                     button.classList.add('btn-primary');
                 }

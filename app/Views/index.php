@@ -150,7 +150,7 @@
                                 <p class="card-text"><?= htmlspecialchars($item['deskripsi'], ENT_QUOTES, 'UTF-8') ?></p>
                                 <p class="card-text mb-0"><strong>Tersedia:</strong> <?= htmlspecialchars($item['jumlah_kamar'] - $item['jumlah_pesan'], ENT_QUOTES, 'UTF-8') ?> kamar</p>
                                 <p class="card-text"><strong>Harga:</strong> Rp <?= number_format($item['harga'], 0, ',', '.') ?>/malam</p>
-                                <a class="btn btn-primary w-100" href="<?= site_url('kamar/pesan/' . $item['id']) ?>">PESAN SEKARANG</a>
+                                <a class="btn btn-primary w-100" href="<?= site_url('pemesanan/' . $item['id']) ?>">PESAN SEKARANG</a>
                             </div>
                         </div>
                     </div>
@@ -164,7 +164,7 @@
         <div class="container text-center">
             <h2 class="mb-4">Pesan Beberapa Kamar Sekaligus</h2>
             <p class="mb-4">Dengan fitur pemesanan kamar secara banyak, Anda dapat merencanakan kunjungan grup atau acara khusus dengan lebih praktis dan efisien. Apakah Anda memerlukan beberapa kamar untuk keluarga, teman, atau rekan bisnis, proses pemesanan kami dirancang untuk memudahkan Anda. Cukup klik tombol di bawah ini untuk melakukan pemesanan kamar secara langsung dan nikmati kemudahan mengatur akomodasi untuk seluruh grup Anda.</p>
-            <a href="<?= site_url('/kamar/pesan') ?>" class="btn btn-primary btn-lg">Pesan Kamar Sekarang</a>
+            <a href="<?= site_url('/pemesanan') ?>" class="btn btn-primary btn-lg">Pesan Kamar Sekarang</a>
         </div>
     </section>
 
