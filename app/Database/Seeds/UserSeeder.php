@@ -10,26 +10,20 @@ class UserSeeder extends Seeder
     {
         $data = [
             [
-                'nama'     => 'Admin',
+                'nama'     => 'Administrator',
                 'username' => 'admin',
-                'password' => password_hash('password', PASSWORD_DEFAULT),
+                'password' => password_hash('password', PASSWORD_DEFAULT), // Hash password
                 'role'     => 'admin',
             ],
             [
-                'nama'     => 'Iksal',
-                'username' => 'iksal',
-                'password' => password_hash('password', PASSWORD_DEFAULT),
-                'role'     => 'resepsionis',
-            ],
-            [
-                'nama'     => 'Faiq',
-                'username' => 'faiq',
-                'password' => password_hash('password', PASSWORD_DEFAULT),
+                'nama'     => 'Resepsionis',
+                'username' => 'resepsionis',
+                'password' => password_hash('password', PASSWORD_DEFAULT), // Hash password
                 'role'     => 'resepsionis',
             ],
         ];
 
-        // Using Query Builder
+        // Insert data into the 'user' table
         $this->db->table('user')->insertBatch($data);
     }
 }

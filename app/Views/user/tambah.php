@@ -37,8 +37,10 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="<?= site_url('user') ?>" class="btn btn-secondary">Batal</a>
+                <div class="text-right mb-2 mt-4">
+                    <a href="<?= site_url('user') ?>" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
             </form>
         </div>
     </div>

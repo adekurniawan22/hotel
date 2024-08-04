@@ -3,141 +3,111 @@
 namespace App\Controllers;
 
 use App\Models\ReservasiModel;
+use App\Models\DetailReservasiModel;
 use CodeIgniter\Controller;
-use App\Models\KamarModel;
 
 class ReservasiController extends Controller
 {
     protected $reservasiModel;
-    protected $kamarModel;
+    protected $detailReservasiModel;
 
     public function __construct()
     {
-        $this->kamarModel = new KamarModel();
         $this->reservasiModel = new ReservasiModel();
+        $this->detailReservasiModel = new DetailReservasiModel();
     }
 
     public function index()
     {
-        $data['title'] = 'Reservasi';
-        $data['reservasi'] = $this->reservasiModel->getReservasiWithKamar();
-        return view('admin/reservasi/list', $data);
+        $data = [
+            'title' => 'Reservasi',
+            'reservasi' => $this->reservasiModel->findAll(),
+        ];
+        return view('reservasi/list', $data);
     }
 
     public function create()
     {
-        $data['kamar'] = $this->kamarModel->findAll();
-        $data['title'] = 'Tambah Reservasi';
-        return view('admin/reservasi/tambah', $data);
+        $data = [
+            'title' => 'Tambah Reservasi',
+            'kamar' => (new \App\Models\KamarModel())->findAll(), // Ambil semua data kamar
+        ];
+        return view('reservasi/tambah', $data);
     }
 
     public function store()
     {
-        $this->reservasiModel->save([
-            'id_kamar' => $this->request->getPost('id_kamar'),
-            'nama_pemesan' => $this->request->getPost('nama_pemesan'),
-            'email' => $this->request->getPost('email'),
-            'no_hp' => $this->request->getPost('no_hp'),
-            'tanggal_check_in' => $this->request->getPost('tanggal_check_in'),
-            'tanggal_check_out' => $this->request->getPost('tanggal_check_out'),
-            'status' => $this->request->getPost('status'),
-        ]);
-        session()->setFlashdata('success', 'Tambah reservasi berhasil!');
+        // Ambil data dari request
+        $namaPemesan = $this->request->getPost('nama_pemesan');
+        $email = $this->request->getPost('email');
+        $noHp = $this->request->getPost('no_hp');
+        $tanggalCheckin = $this->request->getPost('tanggal_checkin');
+        $tanggalCheckout = $this->request->getPost('tanggal_checkout');
+        $status = $this->request->getPost('status');
+        $kamar = $this->request->getPost('id_kamar'); // Array of kamar IDs
+        $jumlahKamar = $this->request->getPost('jumlah_kamar'); // Array of jumlah kamar per ID
 
+        // Simpan data reservasi
+        $reservasiId = $this->reservasiModel->insert([
+            'nama_pemesan' => $namaPemesan,
+            'email' => $email,
+            'no_hp' => $noHp,
+            'tanggal_checkin' => $tanggalCheckin,
+            'tanggal_checkout' => $tanggalCheckout,
+            'status' => $status,
+            'diselesaikan_oleh' => null, // Atur sesuai kebutuhan
+        ]);
+
+        // Simpan detail reservasi
+        if ($reservasiId) {
+            foreach ($kamar as $index => $kamarId) {
+                $this->detailReservasiModel->insert([
+                    'id_reservasi' => $reservasiId,
+                    'id_kamar' => $kamarId,
+                    'jumlah_kamar' => $jumlahKamar[$index],
+                ]);
+            }
+        }
+
+        session()->setFlashdata('success', 'Reservasi berhasil ditambahkan!');
         return redirect()->to('/reservasi');
     }
 
     public function edit($id)
     {
-        $data['title'] = 'Edit Reservasi';
-        $data['reservasi'] = $this->reservasiModel->find($id);
-        $data['kamar'] = $this->kamarModel->findAll();
-        return view('admin/reservasi/edit', $data);
+        $data = [
+            'reservasi' => $this->reservasiModel->find($id),
+            'title' => 'Edit Reservasi',
+            'kamar' => (new \App\Models\KamarModel())->findAll(), // Ambil semua data kamar
+        ];
+        return view('reservasi/edit', $data);
     }
 
     public function update($id)
     {
         $this->reservasiModel->update($id, [
-            'id_kamar' => $this->request->getPost('id_kamar'),
             'nama_pemesan' => $this->request->getPost('nama_pemesan'),
             'email' => $this->request->getPost('email'),
             'no_hp' => $this->request->getPost('no_hp'),
-            'tanggal_check_in' => $this->request->getPost('tanggal_check_in'),
-            'tanggal_check_out' => $this->request->getPost('tanggal_check_out'),
+            'tanggal_checkin' => $this->request->getPost('tanggal_checkin'),
+            'tanggal_checkout' => $this->request->getPost('tanggal_checkout'),
             'status' => $this->request->getPost('status'),
+            'diselesaikan_oleh' => $this->request->getPost('diselesaikan_oleh'), // Atur sesuai kebutuhan
         ]);
 
-        $status = $this->request->getPost('status');
-        $userId = session()->get('user_id');
-
-        // Mendapatkan data reservasi yang ada
-        $reservasi = $this->reservasiModel->find($id);
-
-        // Menentukan nilai untuk kolom 'diproses_oleh' dan 'diselesaikan_oleh'
-        if ($status == 'pending' || $status == 'gagal') {
-            $diprosesOleh = null;
-            $diselesaikanOleh = null;
-        } else {
-            $diprosesOleh = ($status == 'diproses') ? $userId : $reservasi['diproses_oleh'];
-            $diselesaikanOleh = ($status == 'selesai') ? $userId : $reservasi['diselesaikan_oleh'];
-        }
-
-        // Memperbarui data dalam model
-        $this->reservasiModel->update($id, [
-            'diproses_oleh' => $diprosesOleh,
-            'diselesaikan_oleh' => $diselesaikanOleh,
-        ]);
-
-
-        session()->setFlashdata('success', 'Edit reservasi berhasil!');
-
+        session()->setFlashdata('success', 'Reservasi berhasil diperbarui!');
         return redirect()->to('/reservasi');
     }
 
     public function delete($id)
     {
+        // Hapus detail reservasi terkait
+        $this->detailReservasiModel->where('id_reservasi', $id)->delete();
+
+        // Hapus reservasi
         $this->reservasiModel->delete($id);
-        session()->setFlashdata('success', 'Hapus reservasi berhasil!');
+
+        session()->setFlashdata('success', 'Reservasi berhasil dihapus!');
         return redirect()->to('/reservasi');
-    }
-
-    public function createKamar($id)
-    {
-        $data['kamar'] = $this->kamarModel->find($id);
-        $data['id_kamar'] = $id;
-        return view('admin/reservasi/pesan', $data);
-    }
-
-    public function storeKamar($id)
-    {
-        // Simpan data pemesanan
-        $this->reservasiModel->save([
-            'id_kamar' => $id,
-            'nama_pemesan' => $this->request->getPost('nama_pemesan'),
-            'email' => $this->request->getPost('email'),
-            'no_hp' => $this->request->getPost('no_hp'),
-            'tanggal_check_in' => $this->request->getPost('tanggal_check_in'),
-            'tanggal_check_out' => $this->request->getPost('tanggal_check_out'),
-            'status' => "pending",
-        ]);
-
-        // Kirim email
-        $email = \Config\Services::email();
-        $email->setFrom('appcilogin@gmail.com', 'Tim Hotel');
-        $email->setTo($this->request->getPost('email'));
-        $email->setSubject('Konfirmasi Pemesanan Kamar');
-        $email->setMessage(
-            'Terima kasih atas pemesanan Anda. Kami telah memproses pemesanan Anda. ' .
-                'Silakan lakukan check-in langsung di hotel pada waktu yang telah ditentukan. ' .
-                'Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi kami ke hoteliksal@email.com.'
-        );
-
-        if ($email->send()) {
-            session()->setFlashdata('success', 'Pemesanan berhasil. <br>Silakan periksa email Anda untuk detail lebih lanjut.');
-        } else {
-            session()->setFlashdata('error', 'Pemesanan berhasil, tetapi kami mengalami kesulitan mengirim email konfirmasi.');
-        }
-
-        return redirect()->to('/');
     }
 }

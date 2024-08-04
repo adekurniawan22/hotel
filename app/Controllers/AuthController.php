@@ -19,13 +19,18 @@ class AuthController extends Controller
 
     public function index()
     {
-        $data['kamar'] = $this->kamarModel->findAll();
+        $data = [
+            'kamar' => $this->kamarModel->findAll()
+        ];
         return view('index', $data);
     }
 
     public function login()
     {
-        return view('login', ['title' => 'Login']);
+        $data = [
+            'title' => 'Login'
+        ];
+        return view('login', $data);
     }
 
     public function authenticate()
@@ -36,22 +41,8 @@ class AuthController extends Controller
         $user = $this->userModel->where('username', $username)->first();
 
         if ($user && password_verify($password, $user['password'])) {
-            $session = session();
-            $session->set('logged_in', true);
-            $session->set('role', $user['role']);
-            $session->set('user_id', $user['id']);
-            $session->set('nama', $user['nama']);
-
-            if ($user['role'] == 'admin') {
-                session()->setFlashdata('success', 'Selamat datang ke menu admin!');
-                return redirect()->to('/dashboard');
-            } elseif ($user['role'] == 'resepsionis') {
-                session()->setFlashdata('success', 'Selamat datang ke menu resepsionis!');
-                return redirect()->to('/reservasi');
-            } else {
-                session()->setFlashdata('error', 'Login gagal, akun tidak ditemukan');
-                return redirect()->to('/login');
-            }
+            $this->setUserSession($user);
+            return $this->redirectUserBasedOnRole($user['role']);
         } else {
             session()->setFlashdata('error', 'Login gagal, akun tidak ditemukan');
             return redirect()->to('/login');
@@ -64,5 +55,32 @@ class AuthController extends Controller
         $session->destroy(); // Hapus seluruh session
 
         return redirect()->to('/login'); // Arahkan kembali ke halaman login
+    }
+
+    private function setUserSession(array $user): void
+    {
+        $session = session();
+        $session->set([
+            'logged_in' => true,
+            'role' => $user['role'],
+            'user_id' => $user['id'],
+            'nama' => $user['nama']
+        ]);
+    }
+
+    private function redirectUserBasedOnRole(string $role)
+    {
+        if ($role === 'admin') {
+            session()->setFlashdata('success', 'Selamat datang ke menu admin!');
+            return redirect()->to('/dashboard');
+        }
+
+        if ($role === 'resepsionis') {
+            session()->setFlashdata('success', 'Selamat datang ke menu resepsionis!');
+            return redirect()->to('/reservasi');
+        }
+
+        session()->setFlashdata('error', 'Login gagal, role tidak dikenali');
+        return redirect()->to('/login');
     }
 }

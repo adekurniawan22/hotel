@@ -9,37 +9,45 @@ class ReservasiModel extends Model
 {
     protected $table      = 'reservasi';
     protected $primaryKey = 'id';
-
     protected $useAutoIncrement = true;
-
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-
-    protected $allowedFields = [
-        'id_kamar', 'nama_pemesan', 'email', 'no_hp', 'tanggal_check_in', 'tanggal_check_out', 'status', 'diproses_oleh',
-        'diselesaikan_oleh'
-    ];
-
+    protected $allowedFields = ['nama_pemesan', 'email', 'no_hp', 'tanggal_checkin', 'tanggal_checkout', 'status', 'diselesaikan_oleh'];
     protected $useTimestamps = false;
-
-    public function getReservasiWithKamar()
-    {
-        return $this->select('reservasi.id AS id_reservasi, reservasi.id_kamar, reservasi.nama_pemesan, reservasi.email, reservasi.no_hp, reservasi.tanggal_check_in, reservasi.tanggal_check_out, reservasi.status, reservasi.diproses_oleh , reservasi.diselesaikan_oleh, kamar.nama_kamar')
-            ->join('kamar', 'kamar.id = reservasi.id_kamar')
-            ->findAll();
-    }
 
     public function getReservasiForCurrentMonth()
     {
-        // Mendapatkan tanggal sekarang di Indonesia
-        $now = new \DateTime('now', new \DateTimeZone('Asia/Jakarta'));
-        $startOfMonth = $now->format('Y-m-01');
-        $endOfMonth = $now->format('Y-m-t');
-
-        return $this->select('reservasi.id AS id_reservasi, reservasi.id_kamar, reservasi.nama_pemesan, reservasi.email, reservasi.no_hp, reservasi.tanggal_check_in, reservasi.tanggal_check_out, reservasi.status, kamar.nama_kamar')
-            ->join('kamar', 'kamar.id = reservasi.id_kamar')
-            ->where('tanggal_check_in >=', $startOfMonth)
-            ->where('tanggal_check_in <=', $endOfMonth)
+        return $this->where('MONTH(tanggal_checkin)', date('m'))
+            ->where('YEAR(tanggal_checkin)', date('Y'))
             ->countAllResults();
+    }
+
+    public function getCountByStatus(string $status): int
+    {
+        return $this->where('status', $status)->countAllResults();
+    }
+
+    public function getTotalRevenueForCurrentMonth($detailReservasiModel)
+    {
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
+        // Get all reservasi IDs for the current month
+        $reservasiIds = $this->select('id')
+            ->where('MONTH(tanggal_checkin)', $currentMonth)
+            ->where('YEAR(tanggal_checkin)', $currentYear)
+            ->findColumn('id');
+
+        if (empty($reservasiIds)) {
+            return 0;
+        }
+
+        // Calculate total revenue
+        $totalRevenue = $detailReservasiModel->select('SUM(detail_reservasi.jumlah_kamar * kamar.harga) AS total_revenue')
+            ->join('kamar', 'kamar.id = detail_reservasi.id_kamar')
+            ->whereIn('detail_reservasi.id_reservasi', $reservasiIds)
+            ->first();
+
+        return $totalRevenue['total_revenue'] ?? 0;
     }
 }

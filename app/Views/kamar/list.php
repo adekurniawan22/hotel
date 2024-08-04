@@ -34,7 +34,7 @@
                                 <td><?= esc($item['harga']) ?></td>
                                 <td>
                                     <a href="<?= site_url('kamar/edit/' . $item['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="<?= site_url('kamar/delete/' . $item['id']) ?>" class="btn btn-danger btn-sm btn-delete">Hapus</a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-url="<?= site_url('kamar/delete/' . $item['id']) ?>">Hapus</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -30,7 +30,7 @@
                                 <td><?= esc($user['role']) ?></td>
                                 <td>
                                     <a href="<?= site_url('user/edit/' . $user['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="<?= site_url('user/delete/' . $user['id']) ?>" class="btn btn-danger btn-sm">Hapus</a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-url="<?= site_url('user/delete/' . $user['id']) ?>">Hapus</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
