@@ -21,9 +21,10 @@
                             <th style="width: 5%;" class="text-center"></th>
                             <th>Nama Kamar</th>
                             <th>Tipe Kamar</th>
+                            <th>Deskripsi</th>
                             <th>Kapasitas</th>
                             <th>Harga</th>
-                            <th>Jumlah Kamar</th>
+                            <th style="width: 15%;">Jumlah Kamar</th>
                             <th style="width: 15%;">Jumlah Pesan</th>
                         </tr>
                     </thead>
@@ -37,9 +38,10 @@
                                 </td>
                                 <td><?= esc($item['nama_kamar']) ?></td>
                                 <td><?= esc($item['tipe_kamar']) ?></td>
-                                <td><?= esc($item['maksimal_kapasitas']) ?></td>
-                                <td><?= esc($item['harga']) ?></td>
-                                <td><?= esc($item['jumlah_kamar']) ?></td>
+                                <td><?= esc($item['deskripsi']) ?></td>
+                                <td><?= esc($item['maksimal_kapasitas']) ?> Orang</td>
+                                <td><?= "Rp. " . number_format($item['harga'], 0, ',', '.') ?></td>
+                                <td><?= esc($item['jumlah_pesan']) ?>/<?= esc($item['jumlah_kamar']) ?> Kamar</td>
                                 <td>
                                     <input type="number" min="1" value="1" class="form-control" data-jumlah-pesan="">
                                 </td>
@@ -90,14 +92,27 @@
                     <input type="date" class="form-control" id="tanggal_checkout" name="tanggal_checkout" value="<?= esc($reservasi['tanggal_checkout']) ?>" required>
                 </div>
 
+                <?php
+                $statusOptions = [
+                    'pending' => ['pending', 'dikonfirmasi', 'gagal'],
+                    'dikonfirmasi' => ['dikonfirmasi', 'check-in', 'gagal'],
+                    'check-in' => ['check-in', 'selesai', 'gagal'],
+                    'selesai' => ['selesai', 'gagal'],
+                    'gagal' => ['pending', 'dikonfirmasi', 'check-in', 'selesai', 'gagal'],
+                ];
+
+                // Get current status
+                $currentStatus = $reservasi['status'];
+                ?>
+
                 <div class="mb-3">
                     <label for="status" class="form-label">Status</label>
                     <select class="form-control" id="status" name="status" required>
-                        <option value="pending" <?= $reservasi['status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
-                        <option value="dikonfirmasi" <?= $reservasi['status'] == 'dikonfirmasi' ? 'selected' : '' ?>>Dikonfirmasi</option>
-                        <option value="check-in" <?= $reservasi['status'] == 'check-in' ? 'selected' : '' ?>>Check-In</option>
-                        <option value="selesai" <?= $reservasi['status'] == 'selesai' ? 'selected' : '' ?>>Selesai</option>
-                        <option value="gagal" <?= $reservasi['status'] == 'gagal' ? 'selected' : '' ?>>Gagal</option>
+                        <?php foreach ($statusOptions[$currentStatus] as $option) : ?>
+                            <option value="<?= $option ?>" <?= $currentStatus == $option ? 'selected' : '' ?>>
+                                <?= ucfirst($option) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 

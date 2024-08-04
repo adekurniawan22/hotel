@@ -4,12 +4,18 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    $("#reservasiDataTable").DataTable({
-        order: [[0, "desc"]], // Sorting by the first column in descending order
-        columnDefs: [
-            { visible: false, targets: 0 }, // Hiding the first column (ID Reservasi)
-        ],
-    });
+    var tableSelector = "#reservasiDataTable";
+
+    // Cek jika DataTable sudah diinisialisasi pada elemen dengan id 'reservasiDataTable'
+    if (!$.fn.DataTable.isDataTable(tableSelector)) {
+        // Jika belum diinisialisasi, lakukan inisialisasi
+        $(tableSelector).DataTable({
+            order: [[0, "desc"]], // Sorting by the first column in descending order
+            columnDefs: [
+                { visible: false, targets: 0 }, // Hiding the first column (ID Reservasi)
+            ],
+        });
+    }
 });
 
 $(document).ready(function () {

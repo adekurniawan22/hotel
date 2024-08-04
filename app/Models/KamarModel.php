@@ -48,4 +48,39 @@ class KamarModel extends Model
 
         return $kamar;
     }
+
+    public function getOneKamar($id)
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table('kamar');
+
+        // Mendapatkan ID reservasi yang dikonfirmasi
+        $reservasiModel = new \App\Models\ReservasiModel();
+        $reservasiDikonfirmasi = $reservasiModel->whereIn('status', ['dikonfirmasi', 'check-in'])->findAll();
+        $idReservasiDikonfirmasi = array_column($reservasiDikonfirmasi, 'id');
+
+        $jumlahDipesan = [];
+        if (!empty($idReservasiDikonfirmasi)) {
+            $detailReservasiModel = new \App\Models\DetailReservasiModel();
+            $detailReservasi = $detailReservasiModel->whereIn('id_reservasi', $idReservasiDikonfirmasi)->findAll();
+            foreach ($detailReservasi as $detail) {
+                if (!isset($jumlahDipesan[$detail['id_kamar']])) {
+                    $jumlahDipesan[$detail['id_kamar']] = 0;
+                }
+                $jumlahDipesan[$detail['id_kamar']] += $detail['jumlah_kamar'];
+            }
+        }
+
+        // Mengambil data kamar berdasarkan ID
+        $kamar = $this->find($id);
+
+        if ($kamar) {
+            // Menambahkan jumlah pesan pada kamar yang diambil
+            $idKamar = $kamar['id'];
+            $jumlahDipesanKamar = isset($jumlahDipesan[$idKamar]) ? $jumlahDipesan[$idKamar] : 0;
+            $kamar['jumlah_pesan'] = $jumlahDipesanKamar;
+        }
+
+        return $kamar;
+    }
 }

@@ -19,8 +19,12 @@ class AuthController extends Controller
 
     public function index()
     {
+        $kamar = $this->kamarModel->getAvailableKamar();
+        $kamar = array_filter($kamar, function ($item) {
+            return $item['jumlah_kamar'] != $item['jumlah_pesan'];
+        });
         $data = [
-            'kamar' => $this->kamarModel->findAll()
+            'kamar' => $kamar
         ];
         return view('index', $data);
     }
@@ -40,12 +44,17 @@ class AuthController extends Controller
 
         $user = $this->userModel->where('username', $username)->first();
 
-        if ($user && password_verify($password, $user['password'])) {
-            $this->setUserSession($user);
-            return $this->redirectUserBasedOnRole($user['role']);
-        } else {
-            session()->setFlashdata('error', 'Login gagal, akun tidak ditemukan');
+        if (empty($username) || empty($password)) {
+            session()->setFlashdata('error', 'Username dan password harus diisi');
             return redirect()->to('/login');
+        } else {
+            if ($user && password_verify($password, $user['password'])) {
+                $this->setUserSession($user);
+                return $this->redirectUserBasedOnRole($user['role']);
+            } else {
+                session()->setFlashdata('error', 'Login gagal, akun tidak ditemukan');
+                return redirect()->to('/login');
+            }
         }
     }
 
@@ -77,7 +86,7 @@ class AuthController extends Controller
 
         if ($role === 'resepsionis') {
             session()->setFlashdata('success', 'Selamat datang ke menu resepsionis!');
-            return redirect()->to('/reservasi');
+            return redirect()->to('/dashboard');
         }
 
         session()->setFlashdata('error', 'Login gagal, role tidak dikenali');

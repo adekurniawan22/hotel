@@ -14,10 +14,11 @@
     <style>
         .hero-section {
             background: url('https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
-            padding: 100px 0;
+            padding: 120px 0;
             color: #fff;
-            position: relative;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .hero-section::before {
@@ -38,48 +39,56 @@
             z-index: 1;
         }
 
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+        }
+
+        .hero-section a {
+            font-size: 1.25rem;
+        }
+
         .room-card {
             cursor: pointer;
             margin-bottom: 20px;
             border: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .room-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
         .room-card .room-type {
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            background-color: #eee;
-            color: #343a40;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1.25rem;
             font-weight: 600;
             text-align: center;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-            z-index: 1;
+            padding: 15px;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
         }
 
         .room-card .card-body {
             padding: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .room-card:hover .room-type {
-            background-color: rgba(0, 123, 255, 1);
-            color: #fff;
         }
 
         .footer {
             background-color: #343a40;
-            padding: 20px 0;
+            padding: 10px 0;
             color: #f8f9fa;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
         }
 
         .footer a {
@@ -93,8 +102,23 @@
 
         .social-icons a {
             color: #f8f9fa;
-            margin: 0 10px;
+            margin: 0 15px;
             font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .room-card .room-type {
+                font-size: 1rem;
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -115,19 +139,32 @@
             <h2 class="text-center mb-4">Kamar Kami</h2>
             <div class="row">
                 <?php foreach ($kamar as $item) : ?>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
                         <div class="card room-card">
-                            <div class="room-type"><?= htmlspecialchars($item['tipe_kamar'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <?php
+                            $imageUrl = 'https://picsum.photos/500/300?random=' . rand(1, 9999);
+                            ?>
+                            <img src="<?= htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') ?>" class="card-img-top" alt="Gambar Hotel">
                             <div class="card-body">
-                                <h5 class="card-title"><?= htmlspecialchars($item['nama_kamar'], ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($item['jumlah_kamar'], ENT_QUOTES, 'UTF-8') ?> Kamar)</h5>
+                                <h5 class="card-title"><?= htmlspecialchars($item['nama_kamar'], ENT_QUOTES, 'UTF-8') ?></h5>
                                 <p class="card-text"><?= htmlspecialchars($item['deskripsi'], ENT_QUOTES, 'UTF-8') ?></p>
-                                <p class="card-text"><strong>Harga:</strong> Rp. <?= number_format($item['harga'], 0, ',', '.') ?> per/malam</p>
-                                <a class="btn btn-primary w-100" href="<?= site_url('kamar/pesan/' . $item['id']) ?>">PESAN</a>
+                                <p class="card-text mb-0"><strong>Tersedia:</strong> <?= htmlspecialchars($item['jumlah_kamar'] - $item['jumlah_pesan'], ENT_QUOTES, 'UTF-8') ?> kamar</p>
+                                <p class="card-text"><strong>Harga:</strong> Rp <?= number_format($item['harga'], 0, ',', '.') ?>/malam</p>
+                                <a class="btn btn-primary w-100" href="<?= site_url('kamar/pesan/' . $item['id']) ?>">PESAN SEKARANG</a>
                             </div>
                         </div>
                     </div>
                 <?php endforeach ?>
             </div>
+        </div>
+    </section>
+
+    <!-- Bulk Booking Section -->
+    <section id="bulk-booking" class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4">Pesan Beberapa Kamar Sekaligus</h2>
+            <p class="mb-4">Dengan fitur pemesanan kamar secara banyak, Anda dapat merencanakan kunjungan grup atau acara khusus dengan lebih praktis dan efisien. Apakah Anda memerlukan beberapa kamar untuk keluarga, teman, atau rekan bisnis, proses pemesanan kami dirancang untuk memudahkan Anda. Cukup klik tombol di bawah ini untuk melakukan pemesanan kamar secara langsung dan nikmati kemudahan mengatur akomodasi untuk seluruh grup Anda.</p>
+            <a href="<?= site_url('/kamar/pesan') ?>" class="btn btn-primary btn-lg">Pesan Kamar Sekarang</a>
         </div>
     </section>
 

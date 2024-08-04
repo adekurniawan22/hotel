@@ -37,4 +37,7 @@ $routes->post('/reservasi/update/(:num)', 'ReservasiController::update/$1');
 $routes->post('/reservasi/delete/(:num)', 'ReservasiController::delete/$1');
 $routes->get('/kamar/pesan/(:num)', 'ReservasiController::createKamar/$1');
 $routes->post('/kamar/pesan/(:num)', 'ReservasiController::storeKamar/$1');
+$routes->get('/kamar/pesan', 'ReservasiController::createKamarMultiple');
+$routes->post('/kamar/pesan', 'ReservasiController::storeKamarMultiple');
+$routes->post('reservasi/update_status', 'ReservasiController::updateStatus');
 $routes->post('reservasi/detail', 'ReservasiController::detail');

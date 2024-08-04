@@ -23,19 +23,19 @@
                             <th>Check-In</th>
                             <th>Check-Out</th>
                             <th style="width: 15%;">Status</th>
-                            <th class="text-center" style="width: 20%" data-sortable="false">Action</th>
+                            <th class="text-center" style="width: 17%" data-sortable="false">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($reservasi as $item) : ?>
-                            <tr>
+                            <tr data-id="<?= esc($item['id']) ?>">
                                 <td><?= esc($item['id']) ?></td>
                                 <td><?= esc($item['nama_pemesan']) ?></td>
                                 <td><?= esc($item['email']) ?></td>
                                 <td><?= esc($item['no_hp']) ?></td>
-                                <td><?= esc($item['tanggal_checkin']) ?></td>
+                                <td class="checkin-date"><?= esc($item['tanggal_checkin']) ?></td>
                                 <td><?= esc($item['tanggal_checkout']) ?></td>
-                                <td>
+                                <td id="status-<?= esc($item['id']) ?>">
                                     <p class="mb-3">
                                         <?php
                                         $statusIcon = '';
@@ -59,7 +59,6 @@
                                         ?>
                                         <?= $statusIcon . ucfirst(esc($item['status'])) ?>
                                     </p>
-
                                     <?php
                                     $userInfos = [];
 
@@ -94,8 +93,8 @@
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
 
+                </table>
             </div>
         </div>
     </div>
@@ -122,9 +121,71 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Inisialisasi DataTable
+        var table = $('#reservasiDataTable').DataTable({
+            order: [
+                [0, "desc"]
+            ], // Sorting by the first column in descending order
+            columnDefs: [{
+                    visible: false,
+                    targets: 0
+                }, // Hiding the first column (ID Reservasi)
+            ],
+        });
+
+        // Fungsi untuk memeriksa tanggal check-in dan memperbarui status
+        function updatePendingStatus() {
+            // Mendapatkan tanggal saat ini dalam zona waktu Indonesia
+            var currentDate = new Date().toISOString().split('T')[0];
+            // Membuat objek Date dari tanggal saat ini
+            var currentDateObj = new Date(currentDate);
+
+            table.rows().every(function() {
+                var row = this.node();
+                var id = $(row).data('id');
+                var statusCell = $('#status-' + id);
+                var checkinDate = $(row).find('.checkin-date').text().trim();
+
+                // Membuat objek Date dari tanggal check-in
+                var checkinDateObj = new Date(checkinDate);
+                console.log("Tanggal checkin : " + checkinDate)
+                console.log("Tanggal saat ini : " + currentDate)
+
+                // Menghitung selisih hari antara tanggal check-in dan tanggal saat ini
+                var oneDay = 24 * 60 * 60 * 1000; // Jumlah milidetik dalam sehari
+                var diffDays = Math.round((checkinDateObj - currentDateObj) / oneDay);
+
+                // Jika status masih pending dan 1 hari sebelum tanggal check-in, lakukan AJAX
+                if (statusCell.length && statusCell.text().includes('Pending') && diffDays <= 1) {
+                    setTimeout(function() {
+                        $.ajax({
+                            url: '<?= site_url('reservasi/update_status') ?>',
+                            type: 'POST',
+                            data: {
+                                id: id,
+                                status: 'gagal'
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                if (response.success) {
+                                    statusCell.html('<i class="fas fa-times-circle text-danger"></i> Gagal');
+                                } else {
+                                    console.error('Gagal memperbarui status');
+                                }
+                            },
+                            error: function() {
+                                console.error('Terjadi kesalahan saat memperbarui status.');
+                            }
+                        });
+                    }, 5000); // Tunggu 10 detik
+                }
+            });
+        }
+
+        updatePendingStatus();
+
         // Ketika tombol Detail diklik
         $('.btn-detail').on('click', function() {
             var id = $(this).data('id'); // Ambil ID dari atribut data-id
@@ -196,28 +257,18 @@
 
         // Fungsi untuk format angka ke format Rupiah
         function formatRupiah(angka) {
-            // Ubah angka menjadi string dan hilangkan karakter selain angka dan koma
             var number_string = angka.toString().replace(/[^,\d]/g, '');
-
-            // Pisahkan bagian integer dan desimal
             var split = number_string.split(',');
             var sisa = split[0].length % 3;
             var rupiah = split[0].substr(0, sisa);
             var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            // Tambahkan pemisah ribuan
             if (ribuan) {
                 separator = sisa ? '.' : '';
                 rupiah += separator + ribuan.join('.');
             }
-
-            // Tambahkan pecahan desimal jika ada
-            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return 'Rp. ' + rupiah;
         }
-
     });
 </script>
-
 <?= $this->endSection() ?>

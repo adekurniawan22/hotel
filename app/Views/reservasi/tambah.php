@@ -37,8 +37,8 @@
                                     </div>
                                 </td>
                                 <td><?= esc($item['nama_kamar']) ?></td>
-                                <td><?= esc($item['deskripsi']) ?></td>
                                 <td><?= esc($item['tipe_kamar']) ?></td>
+                                <td><?= esc($item['deskripsi']) ?></td>
                                 <td><?= esc($item['maksimal_kapasitas']) ?> Orang</td>
                                 <td><?= "Rp. " . number_format($item['harga'], 0, ',', '.') ?></td>
                                 <td><?= esc($item['jumlah_pesan']) ?>/<?= esc($item['jumlah_kamar']) ?> Kamar</td>

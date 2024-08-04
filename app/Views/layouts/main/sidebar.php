@@ -18,25 +18,21 @@ $userRole = $session->get('role');
         <div class="sidebar-brand-text mx-3">Hotel Iksal</div>
     </a>
 
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item <?= strpos($currentURL, 'dashboard') !== false ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= site_url('dashboard') ?>">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
     <!-- Divider -->
-    <hr class="sidebar-divider my-0">
+    <hr class="sidebar-divider">
 
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Menu
+    </div>
     <?php if ($userRole === 'admin') : ?>
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item <?= strpos($currentURL, 'dashboard') !== false ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= site_url('dashboard') ?>">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Menu
-        </div>
 
         <!-- Nav Item - User -->
         <li class="nav-item <?= strpos($currentURL, 'user') !== false ? 'active' : '' ?>">
