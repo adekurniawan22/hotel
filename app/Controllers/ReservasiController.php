@@ -190,20 +190,20 @@ class ReservasiController extends Controller
                     $totalHargaKeseluruhan += $totalHarga;
 
                     $message .= '<tr>';
-                    $message .= '<td>' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
-                    $message .= '<td>Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
-                    $message .= '<td>x ' . $jumlahKamar . '</td>';
-                    $message .= '<td>Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
+                    $message .= '<td style="text-align: center;">' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
+                    $message .= '<td style="text-align: center;">Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
+                    $message .= '<td style="text-align: center;">x ' . $jumlahKamar . '</td>';
+                    $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
                     $message .= '</tr>';
                 }
             }
 
             $message .= '<tr><td colspan="3" style="text-align: right;"><strong>Total Keseluruhan:</strong></td>';
-            $message .= '<td>Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
+            $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
             $message .= '</tbody>';
             $message .= '</table><br>';
 
-            $message .= '<p>Silakan tunjukin bukti email ini ketika melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hoteliksal@email.com.</p>';
+            $message .= '<p>Silakan tunjukin bukti email ini ketika melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hotelade@email.com.</p>';
             $message .= '<p>Terima kasih dan selamat berlibur!</p>';
 
             $email = \Config\Services::email();
@@ -346,10 +346,10 @@ class ReservasiController extends Controller
                     $totalHargaKeseluruhan += $totalHarga;
 
                     $message .= '<tr>';
-                    $message .= '<td>' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
-                    $message .= '<td>Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
-                    $message .= '<td>x ' . $jumlahKamar . '</td>';
-                    $message .= '<td>Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
+                    $message .= '<td style="text-align: center;">' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
+                    $message .= '<td style="text-align: center;">Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
+                    $message .= '<td style="text-align: center;">x ' . $jumlahKamar . '</td>';
+                    $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
                     $message .= '</tr>';
                 }
             }
@@ -364,19 +364,19 @@ class ReservasiController extends Controller
             $totalHargaKeseluruhan += $totalHarga;
 
             $message .= '<tr>';
-            $message .= '<td>' . $kamar['nama_kamar'] . '</td>';
-            $message .= '<td>Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>';
-            $message .= '<td>x ' . $jumlahPesan . '</td>';
-            $message .= '<td>Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>';
+            $message .= '<td style="text-align: center;">' . $kamar['nama_kamar'] . '</td>';
+            $message .= '<td style="text-align: center;">Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>';
+            $message .= '<td style="text-align: center;">x ' . $jumlahPesan . '</td>';
+            $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>';
             $message .= '</tr>';
         }
 
         $message .= '<tr><td colspan="3" style="text-align: right;"><strong>Total Keseluruhan:</strong></td>';
-        $message .= '<td>Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
+        $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
         $message .= '</tbody>';
         $message .= '</table><br>';
 
-        $message .= '<p>Silakan melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hoteliksal@email.com, datang langsung ke hotel, atau menunggu kami menghubungi Anda dalam waktu dekat.</p>';
+        $message .= '<p>Silakan melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hotelade@email.com, datang langsung ke hotel, atau menunggu kami menghubungi Anda dalam waktu dekat.</p>';
         $message .= '<p>Terima kasih dan selamat berlibur!</p>';
 
         $email = \Config\Services::email();
@@ -464,20 +464,20 @@ class ReservasiController extends Controller
                 $totalHargaKeseluruhan += $totalHarga;
 
                 $message .= '<tr>';
-                $message .= '<td>' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
-                $message .= '<td>Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
-                $message .= '<td>x ' . $jumlahKamar . '</td>';
-                $message .= '<td>Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
+                $message .= '<td style="text-align: center;">' . $kamar['nama_kamar'] . '</td>'; // Misalkan 'nama_kamar' adalah nama kolom nama kamar di tabel kamar
+                $message .= '<td style="text-align: center;">Rp. ' . number_format($hargaKamar, 2, ',', '.') . '</td>'; // Format harga
+                $message .= '<td style="text-align: center;">x ' . $jumlahKamar . '</td>';
+                $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHarga, 2, ',', '.') . '</td>'; // Format total harga
                 $message .= '</tr>';
             }
         }
 
         $message .= '<tr><td colspan="3" style="text-align: right;"><strong>Total Keseluruhan:</strong></td>';
-        $message .= '<td>Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
+        $message .= '<td style="text-align: center;">Rp. ' . number_format($totalHargaKeseluruhan, 2, ',', '.') . '</td></tr>';
         $message .= '</tbody>';
         $message .= '</table><br>';
 
-        $message .= '<p>Silakan melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hoteliksal@email.com, datang langsung ke hotel, atau menunggu kami menghubungi Anda dalam waktu dekat.</p>';
+        $message .= '<p>Silakan melakukan check-in di hotel pada waktu yang telah ditentukan. Jika Anda memiliki pertanyaan mengenai pembayaran atau prosedur check-in, Anda dapat menghubungi kami melalui email di hotelade@email.com, datang langsung ke hotel, atau menunggu kami menghubungi Anda dalam waktu dekat.</p>';
         $message .= '<p>Terima kasih dan selamat berlibur!</p>';
 
         $email = \Config\Services::email();

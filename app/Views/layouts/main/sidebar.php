@@ -15,7 +15,7 @@ $userRole = $session->get('role');
         <div class="sidebar-brand-icon">
             <i class="fa-solid fa-building" style="color: #ffffff;font-size:22px"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Hotel Iksal</div>
+        <div class="sidebar-brand-text mx-3">Hotel Ade</div>
     </a>
 
     <!-- Nav Item - Dashboard -->
