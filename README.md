@@ -26,6 +26,23 @@ Selamat datang di proyek Website Hotel ini! Proyek ini dibangun menggunakan Code
 - **Profil**: Setiap pengguna dapat mengedit profil mereka yang sedang login.
 - **Logout**: Fitur untuk keluar dari sistem.
 
+## Screenshots
+
+### Landing Page
+![Login](public/screenshots/landing_page.png)
+
+### Pemesanan Kamar
+![Login](public/screenshots/pemesanan_kamar.png)
+
+### Login
+![Login](public/screenshots/login.png)
+
+### Menu Admin
+![Login](public/screenshots/menu_admin.png)
+
+### Menu Resepsionis
+![Login](public/screenshots/menu_resepsionis.png)
+
 ## Instalasi
 
 1. **Clone repositori ini**:
