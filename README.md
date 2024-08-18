@@ -43,7 +43,7 @@ Selamat datang di proyek Website Hotel ini! Proyek ini dibangun menggunakan Code
     composer install
    ```
 
-4. **Jalankan migrasi database**:
+4. **Jalankan migrasi database (konfigurasikan database di .env)**:
    ```bash
     php spark migrate
    ```
