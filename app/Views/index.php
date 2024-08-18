@@ -181,9 +181,11 @@
                     </div>
                 <?php endforeach ?>
             </div>
-            <div class="text-center">
-                <button id="load-more" class="btn btn-primary">Lihat Lebih >></button>
-            </div>
+            <?php if ($index > 5) : ?>
+                <div class="text-center">
+                    <button id="load-more" class="btn btn-primary">Lihat Lebih >></button>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 

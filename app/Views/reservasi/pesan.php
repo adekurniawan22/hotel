@@ -131,9 +131,11 @@ $sorted_kamar_lain = array_merge($sorted_kamar_lain, $remaining_kamar_lain);
                         <?php $counter++; ?>
                     <?php endforeach ?>
                 </div>
-                <div class="text-center mb-5">
-                    <button type="button" id="btn-show-more" class="btn btn-primary">Lihat Lebih >></button>
-                </div>
+                <?php if ($counter > 6) : ?>
+                    <div class="text-center mb-5">
+                        <button type="button" id="btn-show-more" class="btn btn-primary">Lihat Lebih >></button>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- Data Pemesan -->
